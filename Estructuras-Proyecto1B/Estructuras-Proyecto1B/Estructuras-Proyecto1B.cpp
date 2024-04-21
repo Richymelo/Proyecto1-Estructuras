@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 typedef struct Persona {
 	char Nombre;
 	int Edad;
@@ -10,11 +12,11 @@ typedef struct Persona {
 	Persona* Siguiente;
 }*PtrPersona;
 
-void InicializarLista(PtrPersona& Lista)
+void InicializarPadron(PtrPersona& Lista)
 {
     Lista = NULL;
 }
-void DestruirLista(PtrPersona& Lista)
+void DestruirPadron(PtrPersona& Lista)
 {
     PtrPersona Aux;
     Aux = Lista;
@@ -25,30 +27,28 @@ void DestruirLista(PtrPersona& Lista)
         Aux = Lista;
     }
 }
-PtrPersona CrearArticulo(int NCodigo, int NDisponible, float NPrecio)
+PtrPersona CrearPersona(char nNombre, int nEdad, int nCedula)
 {
-    PtrPersona Pieza = new(Persona);
+    PtrPersona p = new(Persona);
     char buffer[5];
 
-    Pieza->Codigo = NCodigo;
-    Pieza->Disponible = NDisponible;
-    Pieza->Precio = NPrecio;
+    p->Nombre = nNombre;
+    p->Edad = nEdad;
+    p->Cedula = nCedula;
 
-    strcpy_s(Pieza->Nombre, "Pieza");
-    _itoa_s(NCodigo, buffer, 10);
-    strcat_s(Pieza->Nombre, buffer);
+    _itoa_s(nCedula, buffer, 10);
 
-    Pieza->Siguiente = NULL;
-    return Pieza;
+    p->Siguiente = NULL;
+    return p;
 }
-void AgregarInicioInventario(PtrPersona& Lista, PtrPersona& Nuevo)
+void AgregarInicioPadron(PtrPersona& Lista, PtrPersona& Nuevo)
 {
     Nuevo->Siguiente = Lista;
     Lista = Nuevo;
 }
-void AgregarFinalInventario(PtrPersona& Lista, PtrPersona& Nuevo)
+void AgregarFinalPadron(PtrPersona& Lista, PtrPersona& Nuevo)
 {
-    PtrTArticulo Aux;
+    PtrPersona Aux;
     Aux = Lista;
     if (Aux != NULL)
     {
@@ -66,29 +66,28 @@ void AgregarFinalInventario(PtrPersona& Lista, PtrPersona& Nuevo)
 
 
 }
-void ListarInventario(PtrPersona& Lista)
+void ListarPadron(PtrPersona& Lista)
 {
     int Contador = 1;
-    PtrTArticulo Aux;
+    PtrPersona Aux;
     Aux = Lista;
     while (Aux != NULL)
     {
         printf(" %d ", Contador);
-        printf("%d ", Aux->Codigo);
+        printf("%d ", Aux->Cedula);
         printf("%s ", Aux->Nombre);
-        printf(" %d ", Aux->Disponible);
-        printf(" %f\n ", Aux->Precio);
+        printf(" %f\n ", Aux->Edad);
         Aux = Aux->Siguiente;
         Contador++;
     }
 }
-PtrTArticulo BuscarArticulo(PtrPersona& Lista, int cual)
+PtrPersona BuscarPersona(PtrPersona& Lista, int cual)
 {
     return Lista;
 }
 
 
-void GuardarInventario(PtrPersona Lista) {
+void GuardarPadron(PtrPersona Lista) {
     FILE* archivo;
     fopen_s(&archivo, "ARCHIVO.txt", "w+");
     if (NULL == archivo) {
@@ -97,10 +96,9 @@ void GuardarInventario(PtrPersona Lista) {
     else {
         PtrTArticulo AUX = Lista;
         while (AUX != NULL) {
-            fprintf(archivo, "%i\n", AUX->Codigo);
+            fprintf(archivo, "%i\n", AUX->Cedula);
             fprintf(archivo, "%s\n", AUX->Nombre);
-            fprintf(archivo, "%i\n", AUX->Disponible);
-            fprintf(archivo, "%f\n", AUX->Precio);
+            fprintf(archivo, "%f\n", AUX->Edad);
             AUX = AUX->Siguiente;
         }
 
@@ -108,8 +106,8 @@ void GuardarInventario(PtrPersona Lista) {
     }
     fclose(archivo);
 }
-void CargarInventario(PtrPersona& Lista) {
-    PtrTArticulo Nuevo;
+void CargarPadron(PtrPersona& Lista) {
+    PtrPersona Nuevo;
     FILE* archivo;
     fopen_s(&archivo, "ARCHIVO.txt", "r");
     if (NULL == archivo) {
@@ -119,15 +117,14 @@ void CargarInventario(PtrPersona& Lista) {
 
 
         while (!feof(archivo)) {
-            Nuevo = new(TArticulo);
+            Nuevo = new(Persona);
             char Cadena[20];
-            fscanf_s(archivo, "%i\n", &Nuevo->Codigo);
+            fscanf_s(archivo, "%i\n", &Nuevo->Cedula);
             fscanf_s(archivo, "%s\n", Cadena, 20);
-            fscanf_s(archivo, "%i\n", &Nuevo->Disponible);
-            fscanf_s(archivo, "%f\n", &Nuevo->Precio);
+            fscanf_s(archivo, "%f\n", &Nuevo->Edad);
             strcpy_s(Nuevo->Nombre, Cadena);
             Nuevo->Siguiente = NULL;
-            AgregarFinalInventario(Lista, Nuevo);
+            AgregarFinalPadron(Lista, Nuevo);
 
         }
     }
